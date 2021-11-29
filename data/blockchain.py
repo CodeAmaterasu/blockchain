@@ -5,6 +5,9 @@ from hashlib import sha256
 
 # noinspection PyMethodMayBeStatic
 class Blockchain:
+    """
+    Class for the blockchain
+    """
 
     def __init__(self) -> None:
         # FIXME: https://www.section.io/engineering-education/how-to-create-a-blockchain-in-python/ used this tutorial
@@ -14,6 +17,12 @@ class Blockchain:
         self.create_block(proof=1, previous_hash='0')
 
     def create_block(self, proof: int, previous_hash: str) -> dict:
+        """
+        Creates new block and appends it to the blockchain
+        :param proof: Proof of the block
+        :param previous_hash: Hash to the previous block
+        :return: Newly created block
+        """
         # TODO: Might wanna move the block of the chain to a own class instead of using a dictionary
         block = {
             'index': len(self.chain) + 1,
@@ -28,6 +37,11 @@ class Blockchain:
         return self.chain[-1]
 
     def proof_of_work(self, previous_proof: int) -> int:
+        """
+        Method for mining new blocks
+        :param previous_proof: Proof of the previous block
+        :return: Proof of work for new block
+        """
         new_proof = 1
         # Default the proof ain't checked
         check_proof = False
@@ -40,10 +54,20 @@ class Blockchain:
         return new_proof
 
     def hash_block(self, block: dict) -> str:
+        """
+        Create hash for block in blockchain
+        :param block: Block to hash
+        :return: Hexdigest of the hashed block
+        """
         encoded_block = json.dumps(block, sort_keys=True).encode()
         return sha256(encoded_block).hexdigest()
 
     def is_chain_valid(self, chain: list):
+        """
+        Check if the blockchain is valid
+        :param chain: Blockchain to check
+        :return: Boolean if the chain is valid
+        """
         previous_block = chain[0]
         block_index = 1
         while block_index < len(chain):
