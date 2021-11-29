@@ -53,3 +53,11 @@ async def create_block(block: Block):
         openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource))
     else:
         return {'message', 'Resource does not exist'}
+
+
+@app.get('/api/get_openchain')
+async def get_openchain():
+    return {
+        'chain': str(openchain.chain),
+        'chain_length': len(openchain.chain)
+    }
