@@ -4,10 +4,11 @@ from fastapi import FastAPI
 from data.blockchain import Blockchain
 from data.blockchain import Block
 from data.openchain import OpenChain
-
+from data.resources import Resources
 app = FastAPI()
 blockchain = Blockchain()
 openchain = OpenChain()
+resources = Resources()
 
 
 @app.get('/api/mine_block')
@@ -23,7 +24,8 @@ async def mine_block():
     proof = blockchain.proof_of_work(previous_proof=previous_proof)
     previous_hash = blockchain.hash_block(block=previous_block)
 
-    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'])
+    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'], resource=
+                                    last_transaction['resource'])
 
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
 
@@ -45,4 +47,9 @@ async def check_blockchain():
 
 @app.post('/api/create_block')
 async def create_block(block: Block):
-    openchain.create_block(owner=block.owner)
+    if block.resource == '':
+        return {'message', 'Cannot create block with empty resource'}
+    if resources.check_resource(block.resource):
+        openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource))
+    else:
+        return {'message', 'Resource does not exist'}

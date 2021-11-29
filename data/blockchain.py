@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class Block(BaseModel):
     owner: str
+    resource: str
 
 
 class Blockchain:
@@ -18,11 +19,12 @@ class Blockchain:
         # List containing all blocks of the chain
         self.chain = []
         # Creating the gensis block (first block of the chain)
-        self.create_block(proof=1, previous_hash='0', owner='')
+        self.create_block(proof=1, previous_hash='0', owner='', resource='')
 
-    def create_block(self, proof: int, previous_hash: str, owner: str) -> dict:
+    def create_block(self, proof: int, previous_hash: str, owner: str, resource: str) -> dict:
         """
         Creates new block and appends it to the blockchain
+        :param resource: Resource of the block
         :param owner: Owner of the block
         :param proof: Proof of the block
         :param previous_hash: Hash to the previous block
@@ -34,7 +36,8 @@ class Blockchain:
             'timestamp': str(datetime.now()),
             'proof': proof,
             'previous_hash': previous_hash,
-            'owner': owner
+            'owner': owner,
+            'resource': resource
         }
         self.chain.append(block)
         return block
