@@ -59,15 +59,18 @@ class Blockchain:
         :param block: Block to hash
         :return: Hexdigest of the hashed block
         """
-        encoded_block = json.dumps(block, sort_keys=True).encode()
+        encoded_block = json.dumps(block, sort_keys=True).encode('utf-8')
+        print('hashing block..')
+        print(type(encoded_block))
         return sha256(encoded_block).hexdigest()
 
-    def is_chain_valid(self, chain: list):
+    def is_chain_valid(self):
         """
         Check if the blockchain is valid
-        :param chain: Blockchain to check
         :return: Boolean if the chain is valid
         """
+        # Copy the chain first because live changes could hypothetically be made
+        chain = self.chain
         previous_block = chain[0]
         block_index = 1
         while block_index < len(chain):
