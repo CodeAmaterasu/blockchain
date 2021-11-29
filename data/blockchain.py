@@ -1,9 +1,13 @@
 import json
 from datetime import datetime
 from hashlib import sha256
+from pydantic import BaseModel
 
 
-# noinspection PyMethodMayBeStatic
+class Block(BaseModel):
+    owner: str
+
+
 class Blockchain:
     """
     Class for the blockchain
@@ -14,11 +18,12 @@ class Blockchain:
         # List containing all blocks of the chain
         self.chain = []
         # Creating the gensis block (first block of the chain)
-        self.create_block(proof=1, previous_hash='0')
+        self.create_block(proof=1, previous_hash='0', owner='')
 
-    def create_block(self, proof: int, previous_hash: str) -> dict:
+    def create_block(self, proof: int, previous_hash: str, owner: str) -> dict:
         """
         Creates new block and appends it to the blockchain
+        :param owner: Owner of the block
         :param proof: Proof of the block
         :param previous_hash: Hash to the previous block
         :return: Newly created block
@@ -28,7 +33,8 @@ class Blockchain:
             'index': len(self.chain) + 1,
             'timestamp': str(datetime.now()),
             'proof': proof,
-            'previous_hash': previous_hash
+            'previous_hash': previous_hash,
+            'owner': owner
         }
         self.chain.append(block)
         return block
