@@ -21,8 +21,6 @@ async def mine_block():
     Mine the oldest block in the openchain
     Returns message if the block was mined successfully
     """
-    # TODO: Here we need to process pending blocks instead of creating a new one,
-    #  so we have to keep track of not processed blocks
     # Get last open transaction
     last_transaction = openchain.get_last_open_block()
     if last_transaction is None:
@@ -94,7 +92,6 @@ async def get_openchain():
 async def broadcast_blockchain(websocket: WebSocket):
     await websocket.accept()
     while True:
-        # TODO: Do we really wanna broadcast the whole chain?
         await asyncio.sleep(5)
         await websocket.send_json(blockchain.chain)
 

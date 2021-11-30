@@ -15,7 +15,6 @@ class OpenChain:
         :param owner: Owner of the block
         :return: Newly created block
         """
-        # TODO: Might wanna move the block of the chain to a own class instead of using a dictionary
         block = {
             'index': len(self.chain) + 1,
             'timestamp': str(datetime.now()),

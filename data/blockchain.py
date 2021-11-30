@@ -16,7 +16,6 @@ class Blockchain:
     """
 
     def __init__(self) -> None:
-        # FIXME: https://www.section.io/engineering-education/how-to-create-a-blockchain-in-python/ used this tutorial
         # List containing all blocks of the chain
         self.chain = []
         # Creating the gensis block (first block of the chain)
@@ -31,7 +30,6 @@ class Blockchain:
         :param previous_hash: Hash to the previous block
         :return: Newly created block
         """
-        # TODO: Might wanna move the block of the chain to a own class instead of using a dictionary
         block = {
             'index': len(self.chain) + 1,
             'timestamp': str(datetime.now()),
