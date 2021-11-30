@@ -1,14 +1,18 @@
 import json
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from data.blockchain import Blockchain
 from data.blockchain import Block
 from data.openchain import OpenChain
 from data.resources import Resources
+import asyncio
+
 app = FastAPI()
 blockchain = Blockchain()
 openchain = OpenChain()
 resources = Resources()
+
+new_block = False
 
 
 @app.get('/api/mine_block')
@@ -26,7 +30,8 @@ async def mine_block():
 
     block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'], resource=
                                     last_transaction['resource'])
-
+    global new_block
+    new_block = True
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
 
 
@@ -61,3 +66,20 @@ async def get_openchain():
         'chain': str(openchain.chain),
         'chain_length': len(openchain.chain)
     }
+
+
+@app.websocket('/ws/blockchain')
+async def broadcast_blockchain(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        # TODO: Do we really wanna broadcast the whole chain?
+        await asyncio.sleep(5)
+        await websocket.send_json(blockchain.chain)
+
+
+@app.websocket('/ws/openchain')
+async def broadcast_openchain(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        await asyncio.sleep(5)
+        await websocket.send_json(openchain.chain)
