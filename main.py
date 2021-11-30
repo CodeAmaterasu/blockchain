@@ -46,7 +46,7 @@ async def get_chain():
     Returns the blockchain and it's current length
     """
     return {
-        'chain': str(blockchain.chain),
+        'chain': blockchain.chain,
         'chain_length': len(blockchain.chain)
     }
 
@@ -85,7 +85,7 @@ async def get_openchain():
     Returns the chain and it's current length
     """
     return {
-        'chain': str(openchain.chain),
+        'chain': openchain.chain,
         'chain_length': len(openchain.chain)
     }
 
