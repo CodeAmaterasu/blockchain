@@ -8,6 +8,7 @@ class Block(BaseModel):
     # FIXME: Move this somewhere else, it's just a dto for the api request
     owner: str
     resource: str
+    signature: str
 
 
 class Blockchain:
@@ -19,9 +20,9 @@ class Blockchain:
         # List containing all blocks of the chain
         self.chain = []
         # Creating the gensis block (first block of the chain)
-        self.create_block(proof=1, previous_hash='0', owner='', resource='')
+        self.create_block(proof=1, previous_hash='0', owner='', resource='', signature='')
 
-    def create_block(self, proof: int, previous_hash: str, owner: str, resource: str) -> dict:
+    def create_block(self, proof: int, previous_hash: str, owner: str, resource: str, signature: str) -> dict:
         """
         Creates new block and appends it to the blockchain
         :param resource: Resource of the block
@@ -36,7 +37,8 @@ class Blockchain:
             'proof': proof,
             'previous_hash': previous_hash,
             'owner': owner,
-            'resource': resource
+            'resource': resource,
+            'signature': signature
         }
         self.chain.append(block)
         return block

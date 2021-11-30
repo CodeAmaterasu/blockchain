@@ -8,7 +8,7 @@ class OpenChain:
     def __init__(self) -> None:
         self.chain = []
 
-    def create_block(self, owner: str, resource: str) -> dict:
+    def create_block(self, owner: str, resource: str, signature: str) -> dict:
         """
         Creates new block and appends it to the blockchain
         :param resource: Resource of the block
@@ -21,7 +21,8 @@ class OpenChain:
             'proof': 0,
             'previous_hash': '1',
             'owner': owner,
-            'resource': resource
+            'resource': resource,
+            'signature': signature
         }
         self.chain.append(block)
         return block

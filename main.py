@@ -31,7 +31,7 @@ async def mine_block():
     previous_hash = blockchain.hash_block(block=previous_block)
 
     block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'], resource=
-                                    last_transaction['resource'])
+                                    last_transaction['resource'], signature=last_transaction['signature'])
     global new_block
     new_block = True
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
@@ -70,7 +70,7 @@ async def create_block(block: Block):
     if block.resource == '':
         return {'message', 'Cannot create block with empty resource'}
     if resources.check_resource(block.resource):
-        openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource))
+        openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
         return {'message', 'New block created on the openchain'}
     else:
         return {'message', 'Resource does not exist'}
