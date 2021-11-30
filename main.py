@@ -67,6 +67,7 @@ async def create_block(block: Block):
     Body: The new block by schema
     Returns message if block was created successfully
     """
+    # TODO: Somewhere here the trading will happen
     if block.resource == '':
         return {'message', 'Cannot create block with empty resource'}
     if resources.check_resource(block.resource):
