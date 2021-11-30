@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 
 class Block(BaseModel):
+    # FIXME: Move this somewhere else, it's just a dto for the api request
     owner: str
     resource: str
 

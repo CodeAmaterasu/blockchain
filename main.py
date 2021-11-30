@@ -17,6 +17,10 @@ new_block = False
 
 @app.get('/api/mine_block')
 async def mine_block():
+    """
+    Mine the oldest block in the openchain
+    Returns message if the block was mined successfully
+    """
     # TODO: Here we need to process pending blocks instead of creating a new one,
     #  so we have to keep track of not processed blocks
     # Get last open transaction
@@ -37,6 +41,10 @@ async def mine_block():
 
 @app.get('/api/get_chain')
 async def get_chain():
+    """
+    Retrieve the current blockchain
+    Returns the blockchain and it's current length
+    """
     return {
         'chain': str(blockchain.chain),
         'chain_length': len(blockchain.chain)
@@ -45,6 +53,10 @@ async def get_chain():
 
 @app.get('/api/check_blockchain')
 async def check_blockchain():
+    """
+    Checks if the blockchain is valid (which means it was not tampered with
+    Returns a message with the validity of the chain
+    """
     return {
         'is_chain_valid': blockchain.is_chain_valid()
     }
@@ -52,16 +64,26 @@ async def check_blockchain():
 
 @app.post('/api/create_block')
 async def create_block(block: Block):
+    """
+    Create a new block (this means a new transaction)
+    Body: The new block by schema
+    Returns message if block was created successfully
+    """
     if block.resource == '':
         return {'message', 'Cannot create block with empty resource'}
     if resources.check_resource(block.resource):
         openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource))
+        return {'message', 'New block created on the openchain'}
     else:
         return {'message', 'Resource does not exist'}
 
 
 @app.get('/api/get_openchain')
 async def get_openchain():
+    """
+    Retrieve the current openchain with non verified blocks
+    Returns the chain and it's current length
+    """
     return {
         'chain': str(openchain.chain),
         'chain_length': len(openchain.chain)
