@@ -70,10 +70,13 @@ async def create_block(block: Block):
     if block.resource == '':
         return {'message', 'Cannot create block with empty resource'}
     if resources.check_resource(block.resource):
-        openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
-        return {'message', 'New block created on the openchain'}
+        if blockchain.verify_ownership(pub_key=block.owner, signature=block.signature, resource=block.resource):
+            openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
+            return {'message': 'New block created on the openchain'}
+        else:
+            return {'message': 'Youre not the owner of the created block'}
     else:
-        return {'message', 'Resource does not exist'}
+        return {'message': 'Resource does not exist'}
 
 
 @app.get('/api/get_openchain')

@@ -1,6 +1,9 @@
+import base64
 import json
 from datetime import datetime
 from hashlib import sha256
+
+import ecdsa
 from pydantic import BaseModel
 
 
@@ -97,3 +100,12 @@ class Blockchain:
             previous_block = block
             block_index += 1
         return True
+
+    def verify_ownership(self, pub_key: str, signature: str, resource: str) -> bool:
+        vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
+        try:
+            vk.verify(bytes.fromhex(signature), bytes(resource, 'utf-8'))
+            return True
+        except ecdsa.keys.BadSignatureError as e:
+            print('Error with ownership: You dont appear to be the owner')
+            return False
