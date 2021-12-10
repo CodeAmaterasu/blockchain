@@ -84,6 +84,7 @@ class Blockchain:
     def is_chain_valid(self):
         """
         Check if the blockchain is valid
+
         :return: Boolean if the chain is valid
         """
         # Copy the chain first because live changes could hypothetically be made
