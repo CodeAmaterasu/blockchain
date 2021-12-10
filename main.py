@@ -9,10 +9,7 @@ import asyncio
 
 app = FastAPI()
 blockchain = Blockchain()
-openchain = OpenChain()
 resources = Resources()
-
-new_block = False
 
 
 @app.get('/api/mine_block')
@@ -22,7 +19,7 @@ async def mine_block():
     Returns message if the block was mined successfully
     """
     # Get last open transaction
-    last_transaction = openchain.get_last_open_block()
+    last_transaction = blockchain.openchain.get_last_open_block()
     if last_transaction is None:
         return {'message': 'No open blocks to mine'}
     previous_block = blockchain.get_previous_block()
@@ -32,8 +29,6 @@ async def mine_block():
 
     block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'], resource=
                                     last_transaction['resource'], signature=last_transaction['signature'])
-    global new_block
-    new_block = True
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
 
 
@@ -67,11 +62,12 @@ async def create_block(block: Block):
     Body: The new block by schema
     Returns message if block was created successfully
     """
+    # TODO: Somewhere here the trading will happen
     if block.resource == '':
         return {'message', 'Cannot create block with empty resource'}
     if resources.check_resource(block.resource):
         if blockchain.verify_ownership(pub_key=block.owner, signature=block.signature, resource=block.resource):
-            openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
+            blockchain.openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
             return {'message': 'New block created on the openchain'}
         else:
             return {'message': 'Youre not the owner of the created block'}
@@ -86,8 +82,8 @@ async def get_openchain():
     Returns the chain and it's current length
     """
     return {
-        'chain': openchain.chain,
-        'chain_length': len(openchain.chain)
+        'chain': blockchain.openchain.chain,
+        'chain_length': len(blockchain.openchain.chain)
     }
 
 
@@ -104,4 +100,4 @@ async def broadcast_openchain(websocket: WebSocket):
     await websocket.accept()
     while True:
         await asyncio.sleep(5)
-        await websocket.send_json(openchain.chain)
+        await websocket.send_json(blockchain.openchain.chain)

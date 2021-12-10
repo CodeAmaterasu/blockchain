@@ -1,12 +1,13 @@
 import json
 from datetime import datetime
-from hashlib import sha256
+import websocket
 
 
 class OpenChain:
 
-    def __init__(self) -> None:
+    def __init__(self, nodes: list) -> None:
         self.chain = []
+        self.nodes = nodes
 
     def create_block(self, owner: str, resource: str, signature: str) -> dict:
         """
@@ -25,6 +26,7 @@ class OpenChain:
             'signature': signature
         }
         self.chain.append(block)
+        # TODO: Broadcast block to all nodes
         return block
 
     def get_last_open_block(self) -> dict:
@@ -33,3 +35,8 @@ class OpenChain:
         last_open_block = self.chain[0]
         self.chain.remove(last_open_block)
         return last_open_block
+
+    def __broadcast_block(self, block: dict):
+        for node in self.nodes:
+            ws = websocket.WebSocketApp(url='ws://' + str(node) + '/ws/new_open_block')
+            ws.send(data=json.dumps(block))

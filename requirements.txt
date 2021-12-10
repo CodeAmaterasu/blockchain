@@ -3,3 +3,4 @@ uvicorn
 pydantic~=1.8.2
 websockets
 ecdsa
+websocket_client
