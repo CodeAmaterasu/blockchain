@@ -2,7 +2,7 @@ import base64
 import json
 from datetime import datetime
 from hashlib import sha256
-
+from data.openchain import OpenChain
 import ecdsa
 from pydantic import BaseModel
 
@@ -23,6 +23,10 @@ class Blockchain:
     def __init__(self) -> None:
         # List containing all blocks of the chain
         self.chain = []
+        # Nodes / Slaves to this instance
+        self.nodes = []
+        # Open transactions
+        self.openchain = OpenChain(self.nodes)
         # Creating the gensis block (first block of the chain)
         self.create_block(proof=1, previous_hash='0', origin='', destination='', amount=0, signature='')
 
@@ -84,6 +88,7 @@ class Blockchain:
     def is_chain_valid(self):
         """
         Check if the blockchain is valid
+
         :return: Boolean if the chain is valid
         """
         # Copy the chain first because live changes could hypothetically be made
