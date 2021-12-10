@@ -9,9 +9,10 @@ from pydantic import BaseModel
 
 class Block(BaseModel):
     # FIXME: Move this somewhere else, it's just a dto for the api request
-    owner: str
-    resource: str
+    origin: str
+    amount: float
     signature: str
+    destination: str
 
 
 class Blockchain:
@@ -23,15 +24,17 @@ class Blockchain:
         # List containing all blocks of the chain
         self.chain = []
         # Creating the gensis block (first block of the chain)
-        self.create_block(proof=1, previous_hash='0', owner='', resource='', signature='')
+        self.create_block(proof=1, previous_hash='0', origin='', destination='', amount=0, signature='')
 
-    def create_block(self, proof: int, previous_hash: str, owner: str, resource: str, signature: str) -> dict:
+    def create_block(self, proof: int, previous_hash: str, origin: str, amount: float, signature: str, destination: str) -> dict:
         """
         Creates new block and appends it to the blockchain
-        :param resource: Resource of the block
-        :param owner: Owner of the block
-        :param proof: Proof of the block
+        :param amount: Resource of the block
+        :param origin: From address of the transaction
+        :param destination: To address of the transaction
+        :param proof: Proof of the proof of the block
         :param previous_hash: Hash to the previous block
+        :param signature: Signature of the block
         :return: Newly created block
         """
         block = {
@@ -39,8 +42,9 @@ class Blockchain:
             'timestamp': str(datetime.now()),
             'proof': proof,
             'previous_hash': previous_hash,
-            'owner': owner,
-            'resource': resource,
+            'origin': origin,
+            'destination': destination,
+            'amount': amount,
             'signature': signature
         }
         self.chain.append(block)
@@ -101,10 +105,10 @@ class Blockchain:
             block_index += 1
         return True
 
-    def verify_ownership(self, pub_key: str, signature: str, resource: str) -> bool:
+    def verify_ownership(self, pub_key: str, signature: str, amount: str) -> bool:
         vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
         try:
-            vk.verify(bytes.fromhex(signature), bytes(resource, 'utf-8'))
+            vk.verify(bytes.fromhex(signature), bytes(amount, 'utf-8'))
             return True
         except ecdsa.keys.BadSignatureError as e:
             print('Error with ownership: You dont appear to be the owner')

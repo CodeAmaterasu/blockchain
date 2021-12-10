@@ -5,12 +5,14 @@ from data.blockchain import Blockchain
 from data.blockchain import Block
 from data.openchain import OpenChain
 from data.resources import Resources
+from data.token import TokenPool
 import asyncio
 
 app = FastAPI()
 blockchain = Blockchain()
 openchain = OpenChain()
 resources = Resources()
+token_pool = TokenPool()
 
 new_block = False
 
@@ -30,8 +32,8 @@ async def mine_block():
     proof = blockchain.proof_of_work(previous_proof=previous_proof)
     previous_hash = blockchain.hash_block(block=previous_block)
 
-    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, owner=last_transaction['owner'], resource=
-                                    last_transaction['resource'], signature=last_transaction['signature'])
+    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, origin=last_transaction['owner'], amount=
+                                    last_transaction['amount'], signature=last_transaction['signature'])
     global new_block
     new_block = True
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
@@ -67,11 +69,11 @@ async def create_block(block: Block):
     Body: The new block by schema
     Returns message if block was created successfully
     """
-    if block.resource == '':
+    if block.amount == '':
         return {'message', 'Cannot create block with empty resource'}
-    if resources.check_resource(block.resource):
-        if blockchain.verify_ownership(pub_key=block.owner, signature=block.signature, resource=block.resource):
-            openchain.create_block(owner=block.owner, resource=resources.get_resource(block.resource), signature=block.signature)
+    if resources.check_resource(block.amount):
+        if blockchain.verify_ownership(pub_key=block.origin, signature=block.signature, amount=block.amount):
+            openchain.create_block(origin=block.origin, amount=token_pool.get_amount(block.amount), signature=block.signature)
             return {'message': 'New block created on the openchain'}
         else:
             return {'message': 'Youre not the owner of the created block'}

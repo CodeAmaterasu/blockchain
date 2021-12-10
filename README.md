@@ -1,5 +1,5 @@
 # Blockchain - M150
-Project to show how a blockchain works
+Project to show how a blockchain works, the crypto currency "DPT - Deep Fried Token" runs on it.
 
 ## What is a blockchain and how does it work?
 
