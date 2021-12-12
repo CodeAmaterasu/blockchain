@@ -7,3 +7,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "10000:10000"
+    healthcheck:
+      test: curl --fail -s http://danilojakob.ch:10000/api/get_chain || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
