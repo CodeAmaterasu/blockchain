@@ -10,7 +10,7 @@ import asyncio
 
 app = FastAPI()
 blockchain = Blockchain()
-openchain = OpenChain()
+openchain = OpenChain(nodes=[])
 resources = Resources()
 token_pool = TokenPool()
 
