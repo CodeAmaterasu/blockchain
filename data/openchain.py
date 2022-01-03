@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 import websocket
+import requests
 
 
 class OpenChain:
@@ -12,6 +13,8 @@ class OpenChain:
     def create_block(self, origin: str, amount: str, destination: str, signature: str) -> dict:
         """
         Creates new block and appends it to the blockchain
+        :param signature:
+        :param destination:
         :param amount: Resource of the block
         :param origin: Owner of the block
         :return: Newly created block
@@ -28,6 +31,7 @@ class OpenChain:
         }
         self.chain.append(block)
         # TODO: Broadcast block to all nodes
+        self.__broadcast_block(block=block)
         return block
 
     def get_last_open_block(self) -> dict:
@@ -39,5 +43,4 @@ class OpenChain:
 
     def __broadcast_block(self, block: dict):
         for node in self.nodes:
-            ws = websocket.WebSocketApp(url='ws://' + str(node) + '/ws/new_open_block')
-            ws.send(data=json.dumps(block))
+            requests.post(url=node + '/api/create_block', data=block)
