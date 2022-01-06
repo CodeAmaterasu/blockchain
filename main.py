@@ -1,4 +1,5 @@
 import json
+from pydoc import describe
 
 from fastapi import FastAPI, WebSocket
 from data.blockchain import Blockchain
@@ -33,7 +34,7 @@ async def mine_block():
     previous_hash = blockchain.hash_block(block=previous_block)
 
     block = blockchain.create_block(proof=proof, previous_hash=previous_hash, origin=last_transaction['owner'], amount=
-                                    last_transaction['amount'], signature=last_transaction['signature'])
+    last_transaction['amount'], signature=last_transaction['signature'], destination=last_transaction['destination'])
     global new_block
     new_block = True
     return {'message': 'Block mined successfully', 'block': str(json.dumps(block))}
@@ -71,8 +72,8 @@ async def create_block(block: Block):
     """
     if block.amount == '':
         return {'message', 'Cannot create block with empty resource'}
-    if blockchain.verify_ownership(pub_key=block.origin, signature=block.signature, amount=block.amount):
-        openchain.create_block(origin=block.origin, amount=token_pool.get_amount(block.amount),
+    if blockchain.verify_ownership(pub_key=block.origin, signature=block.signature, amount=float(block.amount)):
+        openchain.create_block(origin=block.origin, amount=token_pool.get_amount(float(block.amount)),
                                signature=block.signature, destination=block.destination)
         return {'message': 'New block created on the openchain'}
     else:
@@ -89,6 +90,15 @@ async def get_openchain():
         'chain': openchain.chain,
         'chain_length': len(openchain.chain)
     }
+
+
+@app.get('/app/get_blocks')
+async def get_blocks(wallet_address=''):
+    blocks = []
+    for block in blockchain.chain:
+        if block.origin == wallet_address or block.destination == wallet_address:
+            blocks.append(block)
+    return blocks
 
 
 @app.websocket('/ws/blockchain')

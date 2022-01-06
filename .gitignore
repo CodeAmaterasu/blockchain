@@ -1,7 +1,9 @@
 .vs
 .vscode
 *.iml
+!.idea/runConfigurations
 .idea
+./.idea/*
 *.pyc
 venv
 

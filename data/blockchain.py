@@ -10,7 +10,7 @@ from pydantic import BaseModel
 class Block(BaseModel):
     # FIXME: Move this somewhere else, it's just a dto for the api request
     origin: str
-    amount: float
+    amount: str
     signature: str
     destination: str
 
