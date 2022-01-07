@@ -92,12 +92,11 @@ async def get_openchain():
     }
 
 
-@app.get('/app/get_blocks')
+@app.get('/api/get_blocks')
 async def get_blocks(wallet_address=''):
     blocks = []
     for block in blockchain.chain:
-        print(block)
-        if block.origin == wallet_address or block.destination == wallet_address:
+        if block['origin'] == wallet_address or block['destination'] == wallet_address:
             blocks.append(block)
     return blocks
 
