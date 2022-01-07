@@ -33,7 +33,7 @@ async def mine_block():
     proof = blockchain.proof_of_work(previous_proof=previous_proof)
     previous_hash = blockchain.hash_block(block=previous_block)
 
-    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, origin=last_transaction['owner'], amount=
+    block = blockchain.create_block(proof=proof, previous_hash=previous_hash, origin=last_transaction['origin'], amount=
     last_transaction['amount'], signature=last_transaction['signature'], destination=last_transaction['destination'])
     global new_block
     new_block = True
@@ -96,6 +96,7 @@ async def get_openchain():
 async def get_blocks(wallet_address=''):
     blocks = []
     for block in blockchain.chain:
+        print(block)
         if block.origin == wallet_address or block.destination == wallet_address:
             blocks.append(block)
     return blocks
