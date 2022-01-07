@@ -111,8 +111,9 @@ async def verify_wallet(priv_key: str = '', pub_key: str = ''):
     try:
         # Verify the key pair, throws exception when keys don't match
         vk.verify(sig, b'message')
+        return "Wallet is verified"
     except ecdsa.keys.BadSignatureError as e:
-        return "Error: It appears that you're not the owner of the wallet or the private key and public key are incorrect"
+        return "Wallet not verified"
 
 
 @app.websocket('/ws/blockchain')
