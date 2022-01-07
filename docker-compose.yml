@@ -6,7 +6,7 @@ services:
       context: ""
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "10000:10000"
     healthcheck:
       test: curl --fail -s http://danilojakob.ch:10000/api/get_chain || exit 1
       interval: 1m
