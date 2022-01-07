@@ -8,6 +8,8 @@ from data.openchain import OpenChain
 from data.resources import Resources
 from data.token import TokenPool
 import asyncio
+import ecdsa
+import base64
 
 app = FastAPI()
 blockchain = Blockchain()
@@ -99,6 +101,18 @@ async def get_blocks(wallet_address=''):
         if block['origin'] == wallet_address or block['destination'] == wallet_address:
             blocks.append(block)
     return blocks
+
+@app.get('/api/verify_wallet')
+async def verify_wallet(priv_key: str = '', pub_key: str = ''):
+    sk = ecdsa.SigningKey.from_string(bytes.fromhex(priv_key), curve=ecdsa.SECP256k1)
+    vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
+    # Sign a dummy message for the verificatio process
+    sig = sk.sign(b'message')
+    try:
+        # Verify the key pair, throws exception when keys don't match
+        vk.verify(sig, b'message')
+    except ecdsa.keys.BadSignatureError as e:
+        return "Error: It appears that you're not the owner of the wallet or the private key and public key are incorrect"
 
 
 @app.websocket('/ws/blockchain')
