@@ -1,6 +1,7 @@
 import json
 from pydoc import describe
 
+from ecdsa import SECP256k1, SigningKey
 from fastapi import FastAPI, WebSocket
 from data.blockchain import Blockchain
 from data.blockchain import Block
@@ -102,6 +103,7 @@ async def get_blocks(wallet_address=''):
             blocks.append(block)
     return blocks
 
+
 @app.get('/api/verify_wallet')
 async def verify_wallet(priv_key: str = '', pub_key: str = ''):
     sk = ecdsa.SigningKey.from_string(bytes.fromhex(priv_key), curve=ecdsa.SECP256k1)
@@ -114,6 +116,18 @@ async def verify_wallet(priv_key: str = '', pub_key: str = ''):
         return "Wallet is verified"
     except ecdsa.keys.BadSignatureError as e:
         return "Wallet not verified"
+
+
+@app.get('/api/create_wallet')
+async def create_wallet(wallet_name=''):
+    sk = SigningKey.generate(curve=SECP256k1)
+    private_key = sk.to_string().hex()
+    vk = sk.get_verifying_key()
+    public_key = vk.to_string().hex()
+    # Make it shorter and therefore more readable
+    public_key = base64.b64encode(bytes.fromhex(public_key))
+
+    return {"walletName": wallet_name, "privateKey": private_key, "publicKey": public_key}
 
 
 @app.websocket('/ws/blockchain')
