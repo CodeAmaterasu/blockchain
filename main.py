@@ -3,6 +3,7 @@ from pydoc import describe
 
 from ecdsa import SECP256k1, SigningKey
 from fastapi import FastAPI, WebSocket
+from pydantic import BaseModel
 from data.blockchain import Blockchain
 from data.blockchain import Block
 from data.openchain import OpenChain
@@ -20,6 +21,11 @@ token_pool = TokenPool()
 
 new_block = False
 
+
+class Wallet(BaseModel):
+    wallet_name: str
+    private_key: str
+    public_key: str
 
 @app.get('/api/mine_block')
 async def mine_block():
@@ -126,8 +132,8 @@ async def create_wallet(wallet_name=''):
     public_key = vk.to_string().hex()
     # Make it shorter and therefore more readable
     public_key = base64.b64encode(bytes.fromhex(public_key))
-
-    return {"walletName": wallet_name, "privateKey": private_key, "publicKey": public_key}
+    wallet = Wallet(private_key=private_key, public_key=public_key, wallet_name=wallet_name)
+    return wallet
 
 
 @app.websocket('/ws/blockchain')
