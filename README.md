@@ -1,4 +1,4 @@
-# Blockchain - M150
+# Blockchain
 Project to show how a blockchain works, the crypto currency "DPT - Deep Fried Token" runs on it.
 
 ## Technologies used
@@ -22,6 +22,7 @@ The complete code is documented using pydoc, so for detailed information about t
 
 You can access a detailed API Documentation provided by FastAPI using following link: https://blockchain.danilojakob.ch/docs
 
+
 ## Running as Docker container
 
 Install docker and docker-compose for the respective OS.
@@ -31,3 +32,16 @@ Execute following command:
 docker-compose up --build
 ```
 Now you can access the API at ``http://localhost:10000`` and the api docs at ``http://localhsot:10000/docs``
+
+
+## Disclaimer
+
+This project should give a pretty good idea of how a simple blockchain works. But keep in mind it's still a simple blockchain.
+
+With that in mind don't try to use this repository as basis for a Blockchain running in a production environment, because full-fledged security wasn't the top priority.
+
+## License
+
+This repository and the other affiliated repositories, namely [blockchain-explorer](https://github.com/CodeAmaterasu/blockchain-explorer) and [blockchain-client](https://github.com/CodeAmaterasu/blockchain-client) are licensed under the [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+This means you can change the code, distribute it or sell it for commercial use.
