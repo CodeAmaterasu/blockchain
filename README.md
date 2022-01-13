@@ -33,10 +33,19 @@ docker-compose up --build
 ```
 Now you can access the API at ``http://localhost:10000`` and the api docs at ``http://localhsot:10000/docs``
 
+## Wiki
+
+This is an educational repository, so if you want to know more about the blockchain and how it works, you may want to take a look into our [Wiki](https://github.com/CodeAmaterasu/blockchain/wiki/It's-all-about-the-blockchain).
+
+## Contribution
+
+If you'd like to enhance, fix or add some of your blockchain knowledge to the Project / Wiki feel free to fork this repository / Wiki.
+
+We all make mistakes, so if you spot something that doesn't sit right with you, or you still have questions, feel free to open a new [Issue](https://github.com/CodeAmaterasu/blockchain/issues)
 
 ## Disclaimer
 
-This project should give a pretty good idea of how a simple blockchain works. But keep in mind it's still a simple blockchain.
+This project should give a pretty good idea of how a simple blockchain works. But it's still a simple blockchain.
 
 With that in mind don't try to use this repository as basis for a Blockchain running in a production environment, because full-fledged security wasn't the top priority.
 
