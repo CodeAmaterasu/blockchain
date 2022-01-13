@@ -111,6 +111,13 @@ class Blockchain:
         return True
 
     def verify_ownership(self, pub_key: str, signature: str, amount: float) -> bool:
+        """
+        Verify ownership of the block
+        :param pub_key: Wallet address of the block initiator (origin)
+        :param signature: Signature of the block
+        :param amount: Amount of DPTs in block
+        :return: Returns True if the address is block initiator
+        """
         vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
         try:
             vk.verify(bytes.fromhex(signature), bytes(str(amount), 'utf-8'))

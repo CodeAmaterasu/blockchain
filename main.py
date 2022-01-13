@@ -103,6 +103,11 @@ async def get_openchain():
 
 @app.get('/api/get_blocks')
 async def get_blocks(wallet_address=''):
+    """
+    Get all blocks from blockchain for certain wallet address.
+    Query Param: wallet_address: Wallet address of the block origin or destination
+    Returns: List of blocks
+    """
     blocks = []
     for block in blockchain.chain:
         if block['origin'] == wallet_address or block['destination'] == wallet_address:
@@ -112,6 +117,12 @@ async def get_blocks(wallet_address=''):
 
 @app.get('/api/verify_wallet')
 async def verify_wallet(priv_key: str = '', pub_key: str = ''):
+    """
+    Verify wallet private and public key
+    Query Param: priv_key: Private key of the wallet
+                 pub_key: Public key of the wallet
+    Returns: String "Wallet is verified" when wallet is legit
+    """
     sk = ecdsa.SigningKey.from_string(bytes.fromhex(priv_key), curve=ecdsa.SECP256k1)
     vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
     # Sign a dummy message for the verificatio process
@@ -126,6 +137,11 @@ async def verify_wallet(priv_key: str = '', pub_key: str = ''):
 
 @app.get('/api/create_wallet')
 async def create_wallet(wallet_name=''):
+    """
+    Create a new wallet to interact with the blockchain
+    Query Param: wallet_name: Name of the wallet
+    Returns: Wallet name, private and public key as JSON object
+    """
     sk = SigningKey.generate(curve=SECP256k1)
     private_key = sk.to_string().hex()
     vk = sk.get_verifying_key()
