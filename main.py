@@ -7,7 +7,6 @@ from pydantic import BaseModel
 from data.blockchain import Blockchain
 from data.blockchain import Block
 from data.openchain import OpenChain
-from data.resources import Resources
 from data.token import TokenPool
 import asyncio
 import ecdsa
@@ -16,7 +15,6 @@ import base64
 app = FastAPI()
 blockchain = Blockchain()
 openchain = OpenChain(nodes=[])
-resources = Resources()
 token_pool = TokenPool()
 
 new_block = False
