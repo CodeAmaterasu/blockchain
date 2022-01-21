@@ -81,10 +81,9 @@ async def create_block(block: Block):
     """
     if block.amount == '':
         return {'message', 'Cannot create block with empty resource'}
-    if blockchain.verify_ownership(pub_key=block.origin, signature=__create_signature(priv_key=block.priv_key, amount=block.amount), amount=float(block.amount)):
+    if blockchain.verify_ownership(pub_key=block.origin, signature=block.signature, amount=block.amount):
         openchain.create_block(origin=block.origin, amount=token_pool.get_amount(float(block.amount)),
-                               signature=__create_signature(priv_key=block.priv_key, amount=block.amount),
-                               destination=block.destination)
+                               signature=block.signature, destination=block.destination)
         return {'message': 'New block created on the openchain'}
     else:
         return {'message': 'Youre not the owner of the created block'}
@@ -126,7 +125,7 @@ async def verify_wallet(priv_key: str = '', pub_key: str = ''):
     """
     sk = ecdsa.SigningKey.from_string(bytes.fromhex(priv_key), curve=ecdsa.SECP256k1)
     vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
-    # Sign a dummy message for the verificatio process
+    # Sign a dummy message for the verification process
     sig = sk.sign(b'message')
     try:
         # Verify the key pair, throws exception when keys don't match
@@ -134,11 +133,6 @@ async def verify_wallet(priv_key: str = '', pub_key: str = ''):
         return "Wallet is verified"
     except ecdsa.keys.BadSignatureError as e:
         return "Wallet not verified"
-
-
-def __create_signature(priv_key: str = '', amount: str = ''):
-    sk = ecdsa.SigningKey.from_string(bytes.fromhex(priv_key), curve=ecdsa.SECP256k1)
-    return str(sk.sign(bytes(str(amount), 'utf-8')))
 
 
 @app.get('/api/create_wallet')

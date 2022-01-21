@@ -13,7 +13,6 @@ class Block(BaseModel):
     amount: str
     signature: str
     destination: str
-    priv_key: str
 
 
 class Blockchain:
@@ -111,7 +110,7 @@ class Blockchain:
             block_index += 1
         return True
 
-    def verify_ownership(self, pub_key: str, signature: str, amount: float) -> bool:
+    def verify_ownership(self, pub_key: str, signature: str, amount: str) -> bool:
         """
         Verify ownership of the block
         :param pub_key: Wallet address of the block initiator (origin)
@@ -121,7 +120,7 @@ class Blockchain:
         """
         vk = ecdsa.VerifyingKey.from_string(base64.b64decode(pub_key), curve=ecdsa.SECP256k1)
         try:
-            vk.verify(bytes.fromhex(signature), bytes(str(amount), 'utf-8'))
+            vk.verify(bytes.fromhex(signature), bytes(amount, 'utf-8'))
             return True
         except ecdsa.keys.BadSignatureError as e:
             print('Error with ownership: You dont appear to be the owner')
