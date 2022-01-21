@@ -13,6 +13,7 @@ class Block(BaseModel):
     amount: str
     signature: str
     destination: str
+    priv_key: str
 
 
 class Blockchain:
