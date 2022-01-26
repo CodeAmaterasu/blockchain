@@ -162,12 +162,12 @@ async def create_wallet(wallet_name=''):
 @app.get('/api/get_wallet_balance')
 async def get_wallet_balance(wallet_address: str = ''):
     my_blockchain = blockchain.chain
-    balance = 0
+    balance = 0.0
     for block in my_blockchain:
         if block['destination'] == wallet_address:
-            balance += block['amount']
+            balance += float(block['amount'])
         if block['origin'] == wallet_address:
-            balance -= block['amount']
+            balance -= float(block['amount'])
     return {"balance": balance}
 
 
