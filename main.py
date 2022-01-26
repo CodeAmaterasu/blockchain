@@ -112,8 +112,8 @@ async def get_openchain():
     }
 
 
-@app.get('/api/get_blocks')
-async def get_blocks(wallet_address=''):
+@app.post('/api/get_blocks')
+async def get_blocks(blocks_container: BalanceContainer):
     """
     Get all blocks from blockchain for certain wallet address.
     Query Param: wallet_address: Wallet address of the block origin or destination
@@ -121,7 +121,7 @@ async def get_blocks(wallet_address=''):
     """
     blocks = []
     for block in blockchain.chain:
-        if block['origin'] == wallet_address or block['destination'] == wallet_address:
+        if str(block['origin']) == blocks_container.wallet_address or str(block['destination']) == blocks_container.wallet_address:
             blocks.append(block)
     return blocks
 
@@ -168,11 +168,16 @@ async def get_wallet_balance(balance_container: BalanceContainer):
     my_blockchain = blockchain.chain
     balance = 0.0
     for block in my_blockchain:
-        if str(block['destination']) is balance_container.wallet_address:
+        print(type(block['amount']))
+        print("Origin Address: " + block['origin'])
+        print("Destination Address: " + block['destination'])
+        print("Wallet Address: " + balance_container.wallet_address)
+        if str(block['destination']) == balance_container.wallet_address:
+            print("Balance is being added")
             balance = balance + block['amount']
-        if str(block['origin']) is balance_container.wallet_address:
+        if str(block['origin']) == balance_container.wallet_address:
+            print("Balance is being removed")
             balance = balance - block['amount']
-        print("Nothing to add")
     return {"balance": balance}
 
 
