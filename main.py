@@ -36,6 +36,10 @@ class Wallet(BaseModel):
     public_key: str
 
 
+class BalanceContainer(BaseModel):
+    wallet_address: str
+
+
 @app.get('/api/mine_block')
 async def mine_block():
     """
@@ -159,15 +163,16 @@ async def create_wallet(wallet_name=''):
     return wallet
 
 
-@app.get('/api/get_wallet_balance')
-async def get_wallet_balance(wallet_address: str = ''):
+@app.post('/api/get_wallet_balance')
+async def get_wallet_balance(balance_container: BalanceContainer):
     my_blockchain = blockchain.chain
     balance = 0.0
     for block in my_blockchain:
-        if block['destination'] == wallet_address:
-            balance += float(block['amount'])
-        if block['origin'] == wallet_address:
-            balance -= float(block['amount'])
+        if str(block['destination']) is balance_container.wallet_address:
+            balance = balance + block['amount']
+        if str(block['origin']) is balance_container.wallet_address:
+            balance = balance - block['amount']
+        print("Nothing to add")
     return {"balance": balance}
 
 
